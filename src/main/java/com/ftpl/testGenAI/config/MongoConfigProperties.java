@@ -1,10 +1,11 @@
 package com.ftpl.testGenAI.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "spring.data.mongodb")
 public class MongoConfigProperties {
 

@@ -3,8 +3,9 @@ package com.ftpl.testGenAI.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.langchain4j.data.embedding.Embedding;
-import dev.langchain4j.model.embedding.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,11 +15,15 @@ import java.util.stream.Collectors;
 /**
  * Service for generating embeddings from code chunks.
  */
+@Component
 public class EmbeddingService {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    private final static EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+    private final static EmbeddingModel embeddingModel = OllamaEmbeddingModel.builder()
+            .baseUrl("http://localhost:11434")
+            .modelName("nomic-embed-text")
+            .build();
 
     /**
      * Generates embeddings for a list of code chunks and returns them as a list of String representations.

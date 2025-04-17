@@ -1,21 +1,38 @@
 package com.ftpl.testGenAI.integration;
 
+import com.ftpl.testGenAI.config.MongoConfigProperties;
 import com.ftpl.testGenAI.model.VectorDocument;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
 @Repository
+@Component
+@RequiredArgsConstructor
 public class vectorDB {
 
-    @Autowired
+    MongoClient mongoClient;
+    private MongoConfigProperties mongoConfigProperties;
     private MongoTemplate mongoTemplate;
+
+    public vectorDB(MongoClient mongoClient, MongoConfigProperties mongoConfigProperties) {
+        this.mongoClient = mongoClient;
+        this.mongoConfigProperties = mongoConfigProperties;
+        this.mongoTemplate = new MongoTemplate(mongoClient, mongoConfigProperties.getDatabase() != null ? mongoConfigProperties.getDatabase() : "defaultDatabase");
+    }
 
     // method for insert Document
     public void insertVectorDocument(VectorDocument vectorDocument){

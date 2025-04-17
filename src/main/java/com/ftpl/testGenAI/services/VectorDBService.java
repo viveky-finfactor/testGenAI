@@ -2,10 +2,11 @@ package com.ftpl.testGenAI.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ftpl.testGenAI.integration.vectorDB;
 import com.ftpl.testGenAI.model.VectorDocument;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ftpl.testGenAI.integration.vectorDB;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,11 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class VectorDBService {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    @Autowired
-    private vectorDB vectorDB;
+
+
+    private vectorDB vectorDBObj;
+
+    public VectorDBService(vectorDB vectorDBObj){
+        this.vectorDBObj = vectorDBObj;
+    }
 
     public void insertVectorData(String id, List<String> vector, String metadata) {
         // Create a new VectorDocument
@@ -27,12 +34,12 @@ public class VectorDBService {
         vectorDocument.setMetadata(metadata);
 
         // Insert the vector document into the database
-        vectorDB.insertVectorDocument(vectorDocument);
+        vectorDBObj.insertVectorDocument(vectorDocument);
     }
 
     // Get Vector Data by ID
     public List<VectorDocument> getVectorDataById(String id) {
-        return vectorDB.findVectorDocumentById(id);
+        return vectorDBObj.findVectorDocumentById(id);
     }
 
     // Update Vector Data by ID
@@ -42,7 +49,7 @@ public class VectorDBService {
         vectorDocument.setMetadata(metadata);
 
         // Update the vector document in the database
-        vectorDB.updateVectorDocumentById(id, vectorDocument);
+        vectorDBObj.updateVectorDocumentById(id, vectorDocument);
     }
 
     /**

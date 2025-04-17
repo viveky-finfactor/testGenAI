@@ -2,9 +2,11 @@ package com.ftpl.testGenAI.service;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ParserConfiguration.LanguageLevel;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -39,6 +41,12 @@ public class GitService {
 
     public List<String> processJavaFiles(String localRepoPath) throws IOException {
         System.out.println("Processing Java files...");
+
+        // ✅ Set JavaParser to use Java 17 features (or Java 14+)
+        ParserConfiguration parserConfiguration = new ParserConfiguration()
+                .setLanguageLevel(LanguageLevel.JAVA_17);
+        StaticJavaParser.setConfiguration(parserConfiguration);
+
         List<String> methodContents = new ArrayList<>();
 
         try (Stream<Path> paths = Files.walk(Paths.get(localRepoPath))) {
@@ -51,20 +59,25 @@ public class GitService {
 
             int fileCounter = 0;
             for (Path javaFile : javaFiles) {
+                System.out.println("Found " + javaFile.getFileName() + " Java file");
+
                 fileCounter++;
                 if (fileCounter % 10 == 0) {
                     System.out.println("Processed " + fileCounter + " files so far");
                 }
 
-                String relativePath = Paths.get(localRepoPath).relativize(javaFile).toString();
-                String fileContent = Files.readString(javaFile);
+                try {
+                    String fileContent = Files.readString(javaFile);
+                    CompilationUnit cu = StaticJavaParser.parse(fileContent);
 
-                // Parse the file content to extract methods
-                CompilationUnit cu = StaticJavaParser.parse(fileContent);
-                cu.findAll(MethodDeclaration.class).forEach(method -> {
-                    String methodContent = method.toString();
-                    methodContents.add(methodContent);
-                });
+                    cu.findAll(MethodDeclaration.class).forEach(method -> {
+                        String methodContent = method.toString();
+                        methodContents.add(methodContent);
+                    });
+
+                } catch (Exception e) {
+                    System.err.println("Error parsing file: " + javaFile + " -> " + e.getMessage());
+                }
             }
         }
 
