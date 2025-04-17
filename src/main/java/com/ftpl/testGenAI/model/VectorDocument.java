@@ -12,7 +12,7 @@ public class VectorDocument {
 
     @Id
     private String id;
-    private List<Double> vector;
+    private List<String> vector;
     private String metadata;
 
     public String getId() {
@@ -23,11 +23,11 @@ public class VectorDocument {
         this.id = id;
     }
 
-    public List<Double> getVector() {
+    public List<String> getVector() {
         return vector;
     }
 
-    public void setVector(final List<Double> vector) {
+    public void setVector(final List<String> vector) {
         this.vector = vector;
     }
 

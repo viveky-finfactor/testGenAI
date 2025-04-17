@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.UpdateDefinition;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class vectorDB {
@@ -27,7 +28,7 @@ public class vectorDB {
     }
 
     // method to find vector document by vector
-    public List<VectorDocument> findVectorDocumentByVector(List<Double> vector) {
+    public List<VectorDocument> findVectorDocumentByVector(List<String> vector) {
         return mongoTemplate.find(new Query(Criteria.where("vector").all(vector)), VectorDocument.class);
     }
 
@@ -40,4 +41,5 @@ public class vectorDB {
     public void updateVectorDocumentById(String id, VectorDocument vectorDocument) {
         mongoTemplate.updateFirst(new Query(Criteria.where("_id").is(id)), (UpdateDefinition) vectorDocument, VectorDocument.class);
     }
+
 }
