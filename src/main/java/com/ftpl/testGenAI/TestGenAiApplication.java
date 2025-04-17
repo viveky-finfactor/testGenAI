@@ -18,15 +18,6 @@ public class TestGenAiApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext contextFactory = SpringApplication.run(TestGenAiApplication.class, args);
-
-
-		String gitRepoUrl = "https://github.com/Finfactor-Technologies/market-data-provider.git";
-		String localRepoPath = "/Users/mohitgupta/Desktop/Mohit/pfm/projects/market-data-provider";
-
-//		GitService gitService1 = new GitService();
-//		VectorDBService vectorDBService1  = new VectorDBService();
-//		EmbeddingService embeddingService1 = new EmbeddingService();
-
 		final GitHubToVectorDB processor = contextFactory.getBean(GitHubToVectorDB.class);
 		processor.process();
 	}

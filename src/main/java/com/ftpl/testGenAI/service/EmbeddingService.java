@@ -21,7 +21,7 @@ public class EmbeddingService {
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
     private final static EmbeddingModel embeddingModel = OllamaEmbeddingModel.builder()
-            .baseUrl("http://localhost:11434")
+            .baseUrl("http://127.0.0.1:11434")
             .modelName("nomic-embed-text")
             .build();
 

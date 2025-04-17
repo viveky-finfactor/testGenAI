@@ -3,6 +3,7 @@ package com.ftpl.testGenAI.vectordb;
 import com.ftpl.testGenAI.service.EmbeddingService;
 import com.ftpl.testGenAI.service.GitService;
 import com.ftpl.testGenAI.services.VectorDBService;
+import dev.langchain4j.data.document.Metadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,17 +39,20 @@ public class GitHubToVectorDB {
 
             // Step 1: Clone GitHub repository
             String gitRepoUrl = "https://github.com/Finfactor-Technologies/market-data-provider.git";
-            String localRepoPath = "/Users/mohitgupta/Desktop/Mohit/pfm/projects/market-data-provider";
+            String localRepoPath = "/Users/viveky/Downloads/market-data-provider";
 
             gitService.cloneRepository(gitRepoUrl, localRepoPath);
             List<String> methodContents = gitService.processJavaFiles(localRepoPath);
-            List<String> embeddings = embeddingService.generateEmbeddings(methodContents);
+            String embeddings = embeddingService.generateEmbeddings(methodContents).toString();
 
             String id = "git-repo";
             String metaName = "java git repo";
-            vectorDBService.insertVectorData(id, embeddings, metaName);
 
-            System.out.println("Insert the data into mongoVectorDB");
+            Metadata metadata = new Metadata();
+            metadata.put("name", metaName);
+            vectorDBService.insertVectorData(id, embeddings, metadata);
+
+            System.out.println("Inserted the data into mongoVectorDB");
         } catch (Exception e) {
             System.err.println("Error processing repository: " + e.getMessage());
             e.printStackTrace();

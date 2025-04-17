@@ -3,11 +3,12 @@ package com.ftpl.testGenAI.controllers;
 import com.ftpl.testGenAI.model.VectorDocument;
 import com.ftpl.testGenAI.model.VectorRequest;
 import com.ftpl.testGenAI.services.VectorDBService;
+import dev.langchain4j.data.document.Metadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.util.Map;
 
 @RestController
 @RequestMapping("/vector")
@@ -18,22 +19,37 @@ public class VectorDBController {
 
     @PostMapping("/insert")
     public String insertVectorData(@RequestBody VectorRequest vectorRequest) {
-        // Call the service to insert the vector data
-        vectorDBService.insertVectorData(vectorRequest.getId(), vectorRequest.getVector(), vectorRequest.getMetadata());
+        Metadata metadata = convertToMetadata(vectorRequest.getMetadata());
+        vectorDBService.insertVectorData(vectorRequest.getId(), vectorRequest.getText(), metadata);
         return "Vector data inserted successfully";
     }
 
-    // Get Vector Data by ID
     @GetMapping("/get/{id}")
     public List<VectorDocument> getVectorDataById(@PathVariable String id) {
         return vectorDBService.getVectorDataById(id);
     }
 
-    // Update Vector Data by ID
     @PutMapping("/update/{id}")
     public String updateVectorData(@PathVariable String id, @RequestBody VectorRequest vectorRequest) {
-        vectorDBService.updateVectorData(id, vectorRequest.getVector(), vectorRequest.getMetadata());
+        Metadata metadata = convertToMetadata(vectorRequest.getMetadata());
+        vectorDBService.updateVectorData(id, vectorRequest.getText(), metadata);
         return "Vector data updated successfully";
     }
-}
 
+    @GetMapping("/getAll")
+    public List<VectorDocument> getAllVectorData() {
+        return vectorDBService.findAll();
+    }
+
+    private Metadata convertToMetadata(Map<String, Object> rawMap) {
+        Metadata metadata = new Metadata();
+        if (rawMap != null) {
+            rawMap.forEach((key, value) -> {
+                if (key != null && value != null) {
+                    metadata.put(key, value.toString());
+                }
+            });
+        }
+        return metadata;
+    }
+}

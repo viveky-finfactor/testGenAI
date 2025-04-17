@@ -1,43 +1,35 @@
 package com.ftpl.testGenAI.model;
 
-import java.util.List;
+import lombok.Data;
+import java.util.Map;
 
+@Data
 public class VectorRequest {
     private String id;
-    private List<String> vector;
-    private String metadata;
-
-    // Default constructor
-    public VectorRequest() {
-    }
-
-    public VectorRequest(String id, List<String> vector, String metadata) {
-        this.id = id;
-        this.vector = vector;
-        this.metadata = metadata;
-    }
+    private String text;
+    private Map<String, Object> metadata;
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
-    public List<String> getVector() {
-        return vector;
+    public String getText() {
+        return text;
     }
 
-    public void setVector(List<String> vector) {
-        this.vector = vector;
+    public void setText(final String text) {
+        this.text = text;
     }
 
-    public String getMetadata() {
+    public Map<String, Object> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(String metadata) {
+    public void setMetadata(final Map<String, Object> metadata) {
         this.metadata = metadata;
     }
 
@@ -45,8 +37,8 @@ public class VectorRequest {
     public String toString() {
         return "VectorRequest{" +
                 "id='" + id + '\'' +
-                ", vector=" + vector +
-                ", metadata='" + metadata + '\'' +
-                "}";
+                ", text='" + text + '\'' +
+                ", metadata=" + metadata +
+                '}';
     }
 }
